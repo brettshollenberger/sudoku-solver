@@ -1,3 +1,3 @@
 # Sudoku Solver
 
-Write a sudoku solver.
+Current solver uses backtracking algorithm.
