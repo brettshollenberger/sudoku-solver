@@ -19,6 +19,10 @@ class Puzzle < Array
     self[x]
   end
 
+  def values_in_column(y)
+    (0..8).to_a.map { |x| self[x][y] }
+  end
+
 end
 
 class Square
@@ -38,6 +42,10 @@ class Square
 
   def row_members
     @puzzle.values_in_row(@x).map { |square| square.value }.reject { |num| num == 0}
+  end
+
+  def column_members
+    @puzzle.values_in_column(@y).map { |square| square.value }.reject { |num| num == 0}
   end
 
 protected

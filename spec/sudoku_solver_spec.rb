@@ -27,6 +27,10 @@ describe "SudokuSolver" do
       expect(puzzle[0][0].row_members).to eql([4, 8, 7, 2])
     end
 
+    it "knows the numbers in its column" do
+      expect(puzzle[0][0].column_members).to eql([1, 3, 7, 4])
+    end
+
     # it "knows its available options" do
     #   expect(puzzle[0][0].options).to eql([5, 6, 9])
     # end
