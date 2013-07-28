@@ -10,7 +10,23 @@ end
 class Puzzle < Array
 
   def initialize(puzzle)
-    puzzle.each { |line| self << line }
+    puzzle.each do |line|
+      self.push(line.map { |number| Square.new(number) })
+    end
+  end
+
+end
+
+class Square
+
+  attr_accessor :value
+
+  def initialize(value)
+    @value = value
+  end
+
+  def solved?
+    @value != 0
   end
 
 end
