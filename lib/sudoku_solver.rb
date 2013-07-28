@@ -1,19 +1,19 @@
-class SudokuSolver
-  attr_accessor :puzzle
-
-  def initialize(puzzle)
-    @puzzle = puzzle
-  end
-
-end
-
-class Puzzle < Array
+class SudokuSolver < Array
 
   attr_accessor :blocks
 
   def initialize(puzzle)
     add_squares(puzzle)
     @blocks = PuzzleMap.new
+  end
+
+  def solve
+    solve_each_square until solved?
+  end
+
+  def solved?
+    self.each { |row| row.each { |square| return false unless square.solved? } }
+    true
   end
 
   def add_squares(puzzle)
@@ -34,6 +34,10 @@ class Puzzle < Array
     coordinates_in_square(x, y).map { |coord| self[coord[0]][coord[1]] }
   end
 
+  def display
+    display_values.join().gsub(/\d{9}/) { |row| row + "\n"}
+  end
+
 private
 
   def coordinates_in_square(x, y)
@@ -42,6 +46,16 @@ private
 
   def block_lookup(x, y)
     @blocks.each { |k, v| break k if v.include?([x, y]) }
+  end
+
+  def solve_each_square
+    self.each do |row|
+      row.each { |square| square.attempt_solution unless square.solved? }
+    end
+  end
+
+  def display_values
+    self.map { |row| row.map { |square| square.value } }
   end
 
 end
@@ -58,6 +72,10 @@ class Square
 
   def options
     [1, 2, 3, 4, 5, 6, 7, 8, 9].map { |option| option unless invalid_option?(option) }.compact!
+  end
+
+  def attempt_solution
+    @value = options.first if one_option_left
   end
 
   def solved?
@@ -81,6 +99,10 @@ class Square
   end
 
 protected
+
+  def one_option_left
+    options.length == 1
+  end
 
   def invalid_option?(option)
     row_members.include?(option) || column_members.include?(option) || square_members.include?(option)
