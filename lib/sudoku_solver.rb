@@ -48,13 +48,16 @@ end
 
 class Square
 
-  attr_accessor :value, :x, :y, :options
+  attr_accessor :value, :x, :y
 
   def initialize(value, x, y, puzzle)
     @value = value
     @x, @y = x, y
     @puzzle = puzzle
-    compute_options unless solved? 
+  end
+
+  def options
+    [1, 2, 3, 4, 5, 6, 7, 8, 9].map { |option| option unless invalid_option?(option) }.compact!
   end
 
   def solved?
@@ -74,12 +77,13 @@ class Square
   end
 
   def find_members_in(&block)
-    block.call.map { |square| square.value }.reject { |num| num == 0}
+    block.call.map { |square| square.value }.reject { |num| num == 0} rescue [0]
   end
 
 protected
-  def compute_options
-    nil
+
+  def invalid_option?(option)
+    row_members.include?(option) || column_members.include?(option) || square_members.include?(option)
   end
 
 end

@@ -43,9 +43,9 @@ describe "SudokuSolver" do
       expect(puzzle[6][6].square_members).to include(9, 8, 6, 5, 2)
     end
 
-    # it "knows its available options" do
-    #   expect(puzzle[0][0].options).to eql([5, 6, 9])
-    # end
+    it "knows its available options" do
+      expect(puzzle[0][0].options).to eql([5, 6, 9])
+    end
 
   end
 
