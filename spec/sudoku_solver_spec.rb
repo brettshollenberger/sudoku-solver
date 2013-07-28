@@ -31,6 +31,18 @@ describe "SudokuSolver" do
       expect(puzzle[0][0].column_members).to eql([1, 3, 7, 4])
     end
 
+    it "knows the numbers in its square" do
+      expect(puzzle[0][0].square_members).to include(4, 1, 3, 2, 8)
+      expect(puzzle[0][3].square_members).to include(8, 9, 6, 4, 7)
+      expect(puzzle[0][6].square_members).to include(7, 5, 9, 2)
+      expect(puzzle[3][0].square_members).to include(7, 9, 5)
+      expect(puzzle[3][3].square_members).to include(4, 3)
+      expect(puzzle[3][6].square_members).to include(8, 3, 1)
+      expect(puzzle[6][0].square_members).to include(4, 5, 7, 1)
+      expect(puzzle[6][3].square_members).to include(1, 8, 4, 6, 5)
+      expect(puzzle[6][6].square_members).to include(9, 8, 6, 5, 2)
+    end
+
     # it "knows its available options" do
     #   expect(puzzle[0][0].options).to eql([5, 6, 9])
     # end
