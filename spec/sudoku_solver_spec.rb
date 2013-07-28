@@ -54,4 +54,22 @@ describe "SudokuSolver" do
     expect(solver.display).to eql("549837612\n168942753\n327651498\n694523871\n832719564\n715468239\n953274186\n271386945\n486195327\n")
   end
 
+  it "solves Medium Sudoku" do
+    @medium_puzzle = [
+      [8, 0, 1, 3, 0, 0, 9, 0, 0],
+      [0, 0, 3, 0, 7, 6, 0, 0, 0],
+      [0, 0, 0, 8, 4, 0, 0, 0, 0],
+      [5, 3, 0, 0, 0, 8, 1, 9, 0],
+      [0, 0, 9, 0, 0, 0, 8, 0, 0],
+      [0, 8, 2, 9, 0, 0, 0, 5, 7],
+      [0, 0, 0, 0, 1, 7, 0, 0, 0],
+      [0, 0, 0, 6, 8, 0, 4, 0, 0],
+      [0, 0, 7, 0, 0, 3, 2, 0, 5]
+    ]
+
+    @medium_solver = SudokuSolver.new(@medium_puzzle)
+    @medium_solver.solve
+    expect(@medium_solver.display).to eql("871325946\n943176528\n256849713\n534768192\n769251834\n182934657\n428517369\n395682471\n617493285\n")
+  end
+
 end
