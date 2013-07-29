@@ -5,6 +5,7 @@ class SudokuSolver < Array
   def initialize(puzzle)
     add_squares(puzzle)
     @blocks = PuzzleMap.new
+    set_square_relationships
   end
 
   def solve
@@ -19,6 +20,16 @@ class SudokuSolver < Array
   def add_squares(puzzle)
     puzzle.each_with_index do |line, y|
       self.push(line.each_with_index.map { |number, x| Square.new(number, x, y, self) })
+    end
+  end
+
+  def set_square_relationships
+    self.each do |row| 
+      row.each do |square|
+        square.row_members = square.find_row_members
+        square.column_members = square.find_column_members
+        square.square_members = square.find_square_members
+      end
     end
   end
 
@@ -62,50 +73,86 @@ end
 
 class Square
 
-  attr_accessor :value, :x, :y
+  attr_accessor :value, :x, :y, :options, :row_members, :column_members, :square_members
 
   def initialize(value, x, y, puzzle)
     @value = value
     @x, @y = x, y
     @puzzle = puzzle
+    @options = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   end
 
-  def options
-    [1, 2, 3, 4, 5, 6, 7, 8, 9].map { |option| option unless invalid_option?(option) }.compact!
+  def reduce_options
+    @options.map! { |option| option unless invalid_option?(option) }.compact!
   end
 
   def attempt_solution
-    @value = options.first if one_option_left
+    attempt_solution_by_only_choice_rule
+    attempt_solution_by_only_square_rule
   end
 
   def solved?
     @value != 0
   end
 
-  def row_members
-    find_members_in { @puzzle.row(@y) }
+  def row_values
+    find_values { @puzzle.row(@y) }
   end
 
-  def column_members
-    find_members_in { @puzzle.column(@x) }
+  def column_values
+    find_values { @puzzle.column(@x) }
   end
 
-  def square_members
-    find_members_in { @puzzle.square(@y, @x) }
+  def square_values
+    find_values { @puzzle.square(@y, @x) }
   end
 
-  def find_members_in(&block)
+  def find_values(&block)
     block.call.map { |square| square.value }.reject { |num| num == 0}
+  end
+
+  def find_row_members
+    find_members { @puzzle.row(@y) }
+  end
+
+  def find_column_members
+    find_members { @puzzle.column(@x) }
+  end
+
+  def find_square_members
+    find_members { @puzzle.square(@y, @x) }
+  end
+
+  def find_members(&block)
+    block.call.map { |square| square unless square == self }.compact!
   end
 
 protected
 
+  ## Only Choice Rule states: There is only one choice left for a particular square
+  def attempt_solution_by_only_choice_rule
+    reduce_options
+    @value = @options.first if one_option_left
+  end
+
   def one_option_left
-    options.length == 1
+    @options.length == 1
   end
 
   def invalid_option?(option)
-    row_members.include?(option) || column_members.include?(option) || square_members.include?(option)
+    row_values.include?(option) || column_values.include?(option) || square_values.include?(option)
+  end
+
+  ## Only Square Rule states: there is only one place that can take a particular number
+  def attempt_solution_by_only_square_rule
+    only_square_rule(@row_members)
+    only_square_rule(@column_members)
+    only_square_rule(@square_members)
+  end
+
+  def only_square_rule(test)
+    related_options = test.map { |square| [square.options] }.flatten!.uniq!
+    @options.each { |option| @value = option if related_options.exclude?(option) } rescue false
   end
 
 end
@@ -173,4 +220,10 @@ class PuzzleMap < Hash
     @blocks.each { |k, v| self[k] = v }
   end
 
+end
+
+class Array
+  def exclude?(what)
+    !self.include?(what)
+  end
 end
