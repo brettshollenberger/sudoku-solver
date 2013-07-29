@@ -17,21 +17,21 @@ class SudokuSolver < Array
   end
 
   def add_squares(puzzle)
-    puzzle.each_with_index do |line, x|
-      self.push(line.each_with_index.map { |number, y| Square.new(number, x, y, self) })
+    puzzle.each_with_index do |line, y|
+      self.push(line.each_with_index.map { |number, x| Square.new(number, x, y, self) })
     end
   end
 
-  def values_in_row(x)
-    self[x]
+  def row(y)
+    self[y]
   end
 
-  def values_in_column(y)
-    (0..8).to_a.map { |x| self[x][y] }
+  def column(x)
+    (0..8).to_a.map { |y| self[y][x] }
   end
 
-  def values_in_square(x, y)
-    coordinates_in_square(x, y).map { |coord| self[coord[0]][coord[1]] }
+  def square(y, x)
+    coordinates_in_square(y, x).map { |coord| self[coord[0]][coord[1]] }
   end
 
   def display
@@ -40,12 +40,12 @@ class SudokuSolver < Array
 
 private
 
-  def coordinates_in_square(x, y)
-    @blocks[block_lookup(x, y)]
+  def coordinates_in_square(y, x)
+    @blocks[block_lookup(y, x)]
   end
 
-  def block_lookup(x, y)
-    @blocks.each { |k, v| break k if v.include?([x, y]) }
+  def block_lookup(y, x)
+    @blocks.each { |k, v| break k if v.include?([y, x]) }
   end
 
   def solve_each_square
@@ -83,19 +83,19 @@ class Square
   end
 
   def row_members
-    find_members_in { @puzzle.values_in_row(@x) }
+    find_members_in { @puzzle.row(@y) }
   end
 
   def column_members
-    find_members_in { @puzzle.values_in_column(@y) }
+    find_members_in { @puzzle.column(@x) }
   end
 
   def square_members
-    find_members_in { @puzzle.values_in_square(@x, @y) }
+    find_members_in { @puzzle.square(@y, @x) }
   end
 
   def find_members_in(&block)
-    block.call.map { |square| square.value }.reject { |num| num == 0} rescue [0]
+    block.call.map { |square| square.value }.reject { |num| num == 0}
   end
 
 protected

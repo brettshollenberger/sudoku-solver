@@ -23,10 +23,26 @@ describe "SudokuSolver" do
 
   it "knows which numbers are in a particular row" do
     expect(solver[0][0].row_members).to eql([4, 8, 7, 2])
+    expect(solver[1][0].row_members).to eql([1, 8, 9, 4, 7, 5])
+    expect(solver[2][0].row_members).to eql([3, 2, 6, 9])
+    expect(solver[3][0].row_members).to eql([9, 3, 8, 1])
+    expect(solver[4][0].row_members).to eql([])
+    expect(solver[5][0].row_members).to eql([7, 5, 4, 3])
+    expect(solver[6][0].row_members).to eql([5, 4, 8, 6])
+    expect(solver[7][0].row_members).to eql([7, 1, 8, 6, 9, 5])
+    expect(solver[8][0].row_members).to eql([4, 1, 5, 2])
   end
 
   it "knows which numbers are in a particular column" do
     expect(solver[0][0].column_members).to eql([1, 3, 7, 4])
+    expect(solver[0][1].column_members).to eql([4, 2, 9, 5, 7])
+    expect(solver[0][2].column_members).to eql([8, 5, 1])
+    expect(solver[0][3].column_members).to eql([8, 9, 6, 4, 1])
+    expect(solver[0][4].column_members).to eql([4, 8])
+    expect(solver[0][5].column_members).to eql([7, 3, 4, 6, 5])
+    expect(solver[0][6].column_members).to eql([7, 8, 9])
+    expect(solver[0][7].column_members).to eql([5, 9, 3, 8, 2])
+    expect(solver[0][8].column_members).to eql([2, 1, 6, 5])
   end
 
   it "knows which numbers are in a particular square" do
